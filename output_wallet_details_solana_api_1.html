@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Wallet Balance Checker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+</head>
+<body>
+
+    <h1>Solana Wallet Balance Checker</h1>
+
+    <form id="walletForm">
+        <label for="walletAddress">Input wallet address:</label>
+        <input type="text" id="walletAddress" placeholder="Paste Solana wallet address" required>
+        <button type="button" onclick="checkBalance()">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        async function checkBalance() {
+            // Get the inputted wallet address
+            var walletAddress = document.getElementById("walletAddress").value;
+
+            // Validate the wallet address
+            if (isValidSolanaAddress(walletAddress)) {
+                try {
+                    // Make Solana API call to get the balance
+                    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("devnet"));
+                    const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+
+                    // Display the balance on the webpage
+                    document.getElementById("output").innerHTML = "Balance of " + walletAddress + ": " + balance + " SOL";
+                } catch (error) {
+                    // Handle API call error
+                    console.error("Error fetching balance:", error);
+                    document.getElementById("output").innerHTML = "Error fetching balance. Please try again.";
+                }
+            } else {
+                // Invalid address
+                document.getElementById("output").innerHTML = "Invalid Solana wallet address. Please input a valid address.";
+            }
+        }
+
+        function isValidSolanaAddress(address) {
+            // "Shallow" verification on client side with Regex if user's input looks like porper Solana address
+            const solanaAddressRegex = /^[0-9A-Za-z]{40,44}$/;
+            // Check if the address matches the format
+            if (!solanaAddressRegex.test(address)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</body>
+</html>
+
