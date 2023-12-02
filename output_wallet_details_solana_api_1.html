@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Wallet Balance Checker</title>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana/1.7.11/web3.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script> -->
+
 </head>
 <body>
 
@@ -26,9 +28,14 @@
             // Validate the wallet address
             if (isValidSolanaAddress(walletAddress)) {
                 try {
+                    const apiUrl = "https://api.mainnet-beta.solana.com";
+                    const connection = new web3.Connection(apiUrl);
+                    // const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+                    const publicKey = new web3.PublicKey(walletAddress);
+                    const balance = await connection.getBalance(publicKey);
                     // Make Solana API call to get the balance
-                    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("devnet"));
-                    const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+                    // const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+                    // const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
 
                     // Display the balance on the webpage
                     document.getElementById("output").innerHTML = "Balance of " + walletAddress + ": " + balance + " SOL";
