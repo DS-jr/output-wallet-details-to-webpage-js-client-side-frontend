@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Wallet Balance Checker</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana/1.7.11/web3.min.js"></script>
+
+    <!-- Development (un-minified). Borrowed from  https://docs.solana.com/developing/clients/javascript-api -->
+    <!-- <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script> -->
+
+    <!-- Production (minified) -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/solana/1.7.11/web3.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script> -->
 
 </head>
@@ -21,28 +28,44 @@
     <div id="output"></div>
 
     <script>
+                
         async function checkBalance() {
             // Get the inputted wallet address
             var walletAddress = document.getElementById("walletAddress").value;
+            // console.log(walletAddress);
 
             // Validate the wallet address
             if (isValidSolanaAddress(walletAddress)) {
                 try {
-                    const apiUrl = "https://api.mainnet-beta.solana.com";
-                    const connection = new web3.Connection(apiUrl);
-                    // const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
-                    const publicKey = new web3.PublicKey(walletAddress);
-                    const balance = await connection.getBalance(publicKey);
-                    // Make Solana API call to get the balance
-                    // const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
-                    // const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+                    // const apiUrl = "https://api.mainnet-beta.solana.com";
+                    // const connection = new solanaWeb3.Connection(apiUrl); //  
 
+                    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+                    // console.log(connection);
+                    
+                    const publicKey = new solanaWeb3.PublicKey(walletAddress);  // 
+                    // console.log(publicKey);
+
+                    // const balance = await connection.getBalance(publicKey);  //  ?? Error fetching balance: Error: failed to get balance of account. TypeError: NetworkError when attempting to fetch resource.
+                    // console.log(balance);
                     // Display the balance on the webpage
-                    document.getElementById("output").innerHTML = "Balance of " + walletAddress + ": " + balance + " SOL";
+                    // document.getElementById("output").innerHTML = "Balance of " + walletAddress + ": " + balance + " SOL";
+
+                    const accountInfo = await connection.getAccountInfo(publicKey);
+                    // console.log(accountInfo);  //  ??  Errors
+                    // if (accountInfo) {
+                    //     // Display the balance on the webpage
+                    //     document.getElementById("output").innerHTML = "Balance of " + walletAddress + ": " + accountInfo.lamports / solanaWeb3.LAMPORTS_PER_SOL + " SOL";
+                    // } else {
+                    //     // Account not found
+                    //     document.getElementById("output").innerHTML = "aCcouNt noT foUnd foR the given address.";
+                    // }                    
+
+
                 } catch (error) {
                     // Handle API call error
-                    console.error("Error fetching balance:", error);
-                    document.getElementById("output").innerHTML = "Error fetching balance. Please try again.";
+                    console.error("ErrOR feTching bAlance:", error);
+                    document.getElementById("output").innerHTML = "eRRor fEtcHing baLaNce. Please try again.";
                 }
             } else {
                 // Invalid address
@@ -59,6 +82,28 @@
             }
             return true;
         }
+
+//        console.log(solanaWeb3);
+
+                    // Make Solana API call to get the balance
+                    // const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+                    // const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+
+                    // const apiUrl = "https://solana-api.projectserum.com";  //  (?) alternative variant
+
+      /**
+       * Fetch the balance for the specified public key
+       */
+      // async getBalance(publicKey, commitmentOrConfig) {
+      //   return await this.getBalanceAndContext(publicKey, commitmentOrConfig).then(x => x.value).catch(e => {
+      //     throw new Error('failed to get balance of account ' + publicKey.toBase58() + ': ' + e);
+      //   });
+      // }
+
+    //   const { Connection, PublicKey } = require('@solana/web3.js');
+
+
+
     </script>
 
 </body>
